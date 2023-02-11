@@ -1,10 +1,18 @@
 
 const express = require('express')
 const app = express()
+const mongoDb = require('./repositories/MongoConnection')
+const mongoDbConnection = (new mongoDb()).getConnection();
+
+const MongoRequestLoggerRepository = require('./repositories/MongoRequestLogger')
+const mongoRequestLogger = new MongoRequestLoggerRepository(mongoDbConnection);
 
 app.get('/', (req, res) => {
 
-    res.send('Hello World :)')
+    mongoRequestLogger.getRequestsForMac('03-23-83-DE-12-F8')
+        .then((result) => {
+            res.json(result);
+    })
 })
 
 app.listen(3000)
@@ -33,12 +41,14 @@ udpServer.on('message',function(buf,info){
         && req.options[53]
         && (req.options[53] === DHCPDISCOVER || req.options[53] === DHCPREQUEST)) {
 
+        console.log('Request from MAC address : ', req.chaddr);
+        console.log('Received %d bytes from %s:%d\n',buf.length, info.address, info.port);
+
+
         const sendToHaService = require('./services/SendToHomeAssistant');
         const sendToHa = new sendToHaService(process.env.HA_ENDPOINT);
         sendToHa.newDHCPRequest(req.chaddr);
-
-        console.log('Request from MAC address : ', req.chaddr);
-        console.log('Received %d bytes from %s:%d\n',buf.length, info.address, info.port);
+        mongoRequestLogger.storeRequest(req.chaddr, req.options[53]);
 
     }
 
