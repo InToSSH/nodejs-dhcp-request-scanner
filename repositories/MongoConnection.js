@@ -1,14 +1,18 @@
-const mongoose = require("mongoose");
-module.exports = class {
+
+class MongoConnection {
     #connection
-    constructor() {
+    constructor(host, dbName, username, password) {
         const mongoose = require('mongoose')
         mongoose.set('strictQuery', true);
-        mongoose.connect(`mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}?authSource=admin`, { useNewUrlParser: true })
+        mongoose.connect(`mongodb://${username}:${password}@${host}/${dbName}?authSource=admin`, { useNewUrlParser: true })
         this.#connection = mongoose
     }
 
     getConnection() {
         return this.#connection
     }
+}
+
+module.exports = function create(host, dbName, username, password) {
+    return new MongoConnection(host, dbName, username, password);
 }

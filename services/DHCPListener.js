@@ -1,20 +1,18 @@
-module.exports = class {
+class DHCPListener {
     #DHCPDISCOVER = 1
     #DHCPREQUEST = 3;
     #BOOTREQUEST = 1;
 
     #protocol
     #udpServer
-    #sendToHa
+    #sendToHaService
     #requestLogger
     constructor(requestLogger) {
-
         const udp = require('dgram')
         this.#udpServer = udp.createSocket('udp4');
         this.#protocol = require('../lib/protocol');
 
-        const sendToHaService = require('./SendToHomeAssistant');
-        this.#sendToHa = new sendToHaService(process.env.HA_ENDPOINT);
+        this.#sendToHaService = require('./SendToHomeAssistant')(process.env.HA_ENDPOINT);
 
         this.#requestLogger = requestLogger
     }
@@ -36,7 +34,7 @@ module.exports = class {
                 console.log('Request from MAC address : ', req.chaddr);
                 console.log('Received %d bytes from %s:%d\n',buf.length, info.address, info.port);
 
-                this.#sendToHa.newDHCPRequest(req.chaddr);
+                this.#sendToHaService.newDHCPRequest(req.chaddr);
                 this.#requestLogger.storeRequest(req.chaddr, req.options[53]);
             }
 
@@ -44,4 +42,8 @@ module.exports = class {
 
         this.#udpServer.bind(67, '0.0.0.0');
     }
+}
+
+module.exports = function create(requestLogger) {
+    return new DHCPListener(requestLogger);
 }

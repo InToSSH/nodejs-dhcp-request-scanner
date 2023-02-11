@@ -1,16 +1,15 @@
-module.exports = class {
+class MongoRequestLogger {
     // TODO: Figure out how to implement an interface with TypeScript
-    #db
+
     #DhcpRequest
     constructor(db) {
-        this.#db = db;
 
-        const dhcpRequestSchema = this.#db.Schema({
+        const dhcpRequestSchema = db.Schema({
             macAddress: String,
             requestType: Number
         }, { timestamps: true })
 
-        this.#DhcpRequest = this.#db.model('DhcpRequest', dhcpRequestSchema);
+        this.#DhcpRequest = db.model('DhcpRequest', dhcpRequestSchema);
     }
 
     storeRequest(mac, type) {
@@ -25,7 +24,7 @@ module.exports = class {
         if (!limit) {
             limit = 20
         }
-        return this.#DhcpRequest.find().sort({createdAt: -1}).limit(limit).exec();
+        return this.#DhcpRequest.find().sort({createdAt: -1}).limit(limit).exec()
     }
 
     async getRequestsForMac(mac, limit) {
@@ -34,20 +33,24 @@ module.exports = class {
         }
 
         if (mac) {
-            return this.#DhcpRequest.find({macAddress: mac}).sort({createdAt: -1}).limit(limit).exec();
+            return this.#DhcpRequest.find({macAddress: mac}).sort({createdAt: -1}).limit(limit).exec()
         }
 
-        return null;
+        return null
     }
 
     purgeOldRequests(olderThanDays) {
         if (!olderThanDays) {
             olderThanDays = 14
         }
-        const today = new Date();
+        const today = new Date()
         const daysAgo = new Date(today.getTime() - olderThanDays * 24 * 60 * 60 * 1000)
 
-        this.#DhcpRequest.deleteMany({ createdAt: { $lt: daysAgo } });
+        this.#DhcpRequest.deleteMany({ createdAt: { $lt: daysAgo } })
     }
 
+}
+
+module.exports = function create(db) {
+    return new MongoRequestLogger(db)
 }

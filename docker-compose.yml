@@ -21,7 +21,12 @@ services:
         mode: host
     networks:
       - internal
-    command: "npm run devStart"
+    command:
+      - /bin/sh
+      - -c
+      - |
+        npm install
+        npm run devStart
 
   mongodb:
     image: mongo:latest

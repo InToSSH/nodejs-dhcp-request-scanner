@@ -1,5 +1,4 @@
-const http = require("node:http");
-module.exports = class {
+class SendToHomeAssistant {
     #endpoint
     #http
     #options
@@ -24,4 +23,8 @@ module.exports = class {
     }
 
 
+}
+
+module.exports = function create(endpoint) {
+    return new SendToHomeAssistant(endpoint);
 }

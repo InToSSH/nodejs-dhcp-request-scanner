@@ -1,14 +1,16 @@
 
 const express = require('express')
 const app = express()
-const mongoDb = require('./repositories/MongoConnection')
-const mongoDbConnection = (new mongoDb()).getConnection();
 
-const MongoRequestLoggerRepository = require('./repositories/MongoRequestLogger')
-const mongoRequestLogger = new MongoRequestLoggerRepository(mongoDbConnection)
+const mongoDbConnection = require('./repositories/MongoConnection')(
+    process.env.DB_HOST,
+    process.env.DB_NAME,
+    process.env.DB_USERNAME,
+    process.env.DB_PASSWORD
+).getConnection()
 
-const DHCPListenerService = require('./services/DHCPListener')
-const DHCPListener = new DHCPListenerService(mongoRequestLogger)
+const mongoRequestLogger = require('./repositories/MongoRequestLogger')(mongoDbConnection)
+const DHCPListener = require('./services/DHCPListener')(mongoRequestLogger)
 
 DHCPListener.listen()
 
