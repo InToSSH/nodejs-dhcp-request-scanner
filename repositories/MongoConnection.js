@@ -1,4 +1,8 @@
-
+/**
+ * Mongo DB connector using Mongoose
+ *
+ * @module MongoConnection
+ */
 class MongoConnection {
     #connection
     constructor(host, dbName, username, password) {
@@ -8,6 +12,10 @@ class MongoConnection {
         this.#connection = mongoose
     }
 
+    /**
+     * Returns the Mongoose instance
+     * @returns {*}
+     */
     getConnection() {
         return this.#connection
     }

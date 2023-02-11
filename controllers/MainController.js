@@ -1,11 +1,21 @@
 const util = require("../util");
 
+/**
+ * @module MainController
+ */
 class MainController {
     #requestLogger
     constructor(requestLogger) {
         this.#requestLogger = requestLogger
     }
 
+    /**
+     * Returns either the list.js view with list of the latest requests or
+     * returns json response in case client accepts it
+     * @param req
+     * @param res
+     * @returns {*}
+     */
     index(req, res) {
         let limit = !isNaN(parseInt(req.query.limit)) ? parseInt(req.query.limit) : 50
 
@@ -20,6 +30,13 @@ class MainController {
         return res;
     }
 
+    /**
+     * Returns either the detail.js view with list of the latest requests for specific MAC address or
+     * returns json response in case client accepts it
+     * @param req
+     * @param res
+     * @returns {*}
+     */
     detail(req, res) {
         let limit = !isNaN(parseInt(req.query.limit)) ? parseInt(req.query.limit) : 50
 

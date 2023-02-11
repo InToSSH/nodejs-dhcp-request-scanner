@@ -1,3 +1,9 @@
+/**
+ * Module responsible for sending requests to Home Assistant instance, more precisely to Node-Red integration
+ * where they are processed and used to set the device tracker state
+ *
+ * @module SendToHomeAssistant
+ */
 class SendToHomeAssistant {
     #endpoint
     #http
@@ -11,6 +17,10 @@ class SendToHomeAssistant {
         }
     }
 
+    /**
+     * Sends a new POST request with newly seen MAC address
+     * @param macAddress
+     */
     newDHCPRequest(macAddress) {
         const req = this.#http.request(this.#endpoint, this.#options, (res) => {
             res.setEncoding('utf8')
