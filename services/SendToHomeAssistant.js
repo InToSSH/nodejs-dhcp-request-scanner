@@ -13,18 +13,17 @@ class SendToHomeAssistant {
 
     newDHCPRequest(macAddress) {
         const req = this.#http.request(this.#endpoint, this.#options, (res) => {
-            res.setEncoding('utf8');
+            res.setEncoding('utf8')
         })
 
         req.write(JSON.stringify({
             'macAddress': macAddress,
         }))
-        req.end();
+        req.end()
     }
-
 
 }
 
 module.exports = function create(endpoint) {
-    return new SendToHomeAssistant(endpoint);
+    return new SendToHomeAssistant(endpoint)
 }

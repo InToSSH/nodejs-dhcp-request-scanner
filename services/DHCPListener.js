@@ -9,10 +9,10 @@ class DHCPListener {
     #requestLogger
     constructor(requestLogger) {
         const udp = require('dgram')
-        this.#udpServer = udp.createSocket('udp4');
-        this.#protocol = require('../lib/protocol');
+        this.#udpServer = udp.createSocket('udp4')
+        this.#protocol = require('../lib/protocol')
 
-        this.#sendToHaService = require('./SendToHomeAssistant')(process.env.HA_ENDPOINT);
+        this.#sendToHaService = require('./SendToHomeAssistant')(process.env.HA_ENDPOINT)
 
         this.#requestLogger = requestLogger
     }
@@ -31,19 +31,20 @@ class DHCPListener {
                 && req.options[53]
                 && (req.options[53] === this.#DHCPDISCOVER || req.options[53] === this.#DHCPREQUEST)) {
 
-                console.log('Request from MAC address : ', req.chaddr);
-                console.log('Received %d bytes from %s:%d\n',buf.length, info.address, info.port);
+                console.log('Request from MAC address : ', req.chaddr)
+                console.log('Received %d bytes from %s:%d\n',buf.length, info.address, info.port)
 
-                this.#sendToHaService.newDHCPRequest(req.chaddr);
-                this.#requestLogger.storeRequest(req.chaddr, req.options[53]);
+                this.#sendToHaService.newDHCPRequest(req.chaddr)
+                this.#requestLogger.storeRequest(req.chaddr, req.options[53])
+                this.#requestLogger.purgeOldRequests()
             }
 
         });
 
-        this.#udpServer.bind(67, '0.0.0.0');
+        this.#udpServer.bind(67, '0.0.0.0')
     }
 }
 
 module.exports = function create(requestLogger) {
-    return new DHCPListener(requestLogger);
+    return new DHCPListener(requestLogger)
 }

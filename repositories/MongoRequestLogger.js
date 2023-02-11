@@ -5,7 +5,7 @@ class MongoRequestLogger {
     constructor(db) {
 
         const dhcpRequestSchema = db.Schema({
-            macAddress: String,
+            macAddress: {type: String, required: true},
             requestType: Number
         }, { timestamps: true })
 

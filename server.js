@@ -1,6 +1,7 @@
-
 const express = require('express')
 const app = express()
+app.set('view engine', 'ejs')
+app.use(express.static("public"));
 
 const mongoDbConnection = require('./repositories/MongoConnection')(
     process.env.DB_HOST,
@@ -10,19 +11,15 @@ const mongoDbConnection = require('./repositories/MongoConnection')(
 ).getConnection()
 
 const mongoRequestLogger = require('./repositories/MongoRequestLogger')(mongoDbConnection)
-const DHCPListener = require('./services/DHCPListener')(mongoRequestLogger)
 
+const rootRouter = require('./routes/root')
+
+app.use('/', rootRouter.rootRoutes(mongoRequestLogger))
+
+const DHCPListener = require('./services/DHCPListener')(mongoRequestLogger)
 DHCPListener.listen()
 
-app.get('/', (req, res) => {
 
-    mongoRequestLogger.getLatestRequests()
-        .then((result) => {
-            res.json(result);
-    })
-})
 
 app.listen(3000)
-
-
 
