@@ -33,6 +33,10 @@ udpServer.on('message',function(buf,info){
         && req.options[53]
         && (req.options[53] === DHCPDISCOVER || req.options[53] === DHCPREQUEST)) {
 
+        const sendToHaService = require('./services/SendToHomeAssistant');
+        const sendToHa = new sendToHaService(process.env.HA_ENDPOINT);
+        sendToHa.newDHCPRequest(req.chaddr);
+
         console.log('Request from MAC address : ', req.chaddr);
         console.log('Received %d bytes from %s:%d\n',buf.length, info.address, info.port);
 
