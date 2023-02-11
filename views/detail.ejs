@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="css/app.css">
+    <title>Requests for MAC: <%= mac %></title>
+</head>
+<body>
+<div class="container">
+    <div class="box-wrapper">
+        <h1>Requests for MAC: <%= mac %></h1>
+        <table class="request-table">
+            <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>MAC address</th>
+                <th>Request type</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% latestRequests.forEach(request => {%>
+                <tr>
+                    <td><%= request.createdAt.toLocaleString('cs-CZ') %></td>
+                    <td><%= request.macAddress %></td>
+                    <td><%= requestTypeToString(request.requestType) %></td>
+                </tr>
+            <%})%>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>
