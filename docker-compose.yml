@@ -1,0 +1,45 @@
+version: "3.8"
+services:
+  node:
+    image: node:18
+    user: node
+    working_dir: /home/node/app
+    environment:
+      - NODE_ENV=development
+      - HA_ENDPOINT=http://10.10.1.10:1880/endpoint/process-dhcp-request
+      - DB_HOST=mongodb:27017
+      - DB_NAME=dhcplogger
+      - DB_USERNAME=root
+      - DB_PASSWORD=bagrneplave123
+    volumes:
+      - ./:/home/node/app
+    ports:
+      - 3000:3000
+      - target: 67
+        published: 67
+        protocol: udp
+        mode: host
+    networks:
+      - internal
+    command: "npm run devStart"
+
+  mongodb:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: bagrneplave123
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data_container:/data/db
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  mongodb_data_container:
+    driver: local
+
