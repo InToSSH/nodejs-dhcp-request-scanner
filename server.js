@@ -20,5 +20,5 @@ const DHCPListener = require('./services/DHCPListener')(mongoRequestLogger)
 DHCPListener.listen()
 
 
-app.listen(3000)
+app.listen(process.env.WEB_SERVER_PORT || 3000)
 
