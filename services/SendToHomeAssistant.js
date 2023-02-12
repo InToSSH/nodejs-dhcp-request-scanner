@@ -4,6 +4,8 @@
  *
  * @module SendToHomeAssistant
  */
+const {isValidUrl} = require("../util");
+
 class SendToHomeAssistant {
     #endpoint
     #http
@@ -19,17 +21,19 @@ class SendToHomeAssistant {
 
     /**
      * Sends a new POST request with newly seen MAC address
-     * @param macAddress
+     * @param {String} macAddress
      */
     newDHCPRequest(macAddress) {
-        const req = this.#http.request(this.#endpoint, this.#options, (res) => {
-            res.setEncoding('utf8')
-        })
+        if (isValidUrl(this.#endpoint)) {
+            const req = this.#http.request(this.#endpoint, this.#options, (res) => {
+                res.setEncoding('utf8')
+            })
 
-        req.write(JSON.stringify({
-            'macAddress': macAddress,
-        }))
-        req.end()
+            req.write(JSON.stringify({
+                'macAddress': macAddress,
+            }))
+            req.end()
+        }
     }
 
 }
